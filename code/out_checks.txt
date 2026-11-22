@@ -1,0 +1,23 @@
+python 3.13.2, numpy 2.2.3, macOS-15.5-arm64-arm-64bit-Mach-O
+(2) Maj_3: max_k |alpha([k]) - I_1| = 0.00e+00  (I_1 = 0.500000)
+(2) Maj_5: max_k |alpha([k]) - I_1| = 0.00e+00  (I_1 = 0.375000)
+(2) Maj_7: max_k |alpha([k]) - I_1| = 0.00e+00  (I_1 = 0.312500)
+(2) Maj_9: max_k |alpha([k]) - I_1| = 0.00e+00  (I_1 = 0.273438)
+(2) Maj_11: max_k |alpha([k]) - I_1| = 0.00e+00  (I_1 = 0.246094)
+(2) Maj_13: max_k |alpha([k]) - I_1| = 0.00e+00  (I_1 = 0.225586)
+(3) thresholds n <= 40, 419 cases: failures {'interval': 0, 'walk': 0, 'cap': 0, 'D': 0}; max sqrt(n)(T - 2) = -1.592224
+  n  1 done
+  n  2 done
+  n  3 done
+  n  4 done
+  n  5 done
+  n  6 done
+  n  7 done
+  n  8 done
+  n  9 done
+  n 10 done
+  n 11 done
+  n 12 done
+(1) 16356 functions, n <= 12: violations none; max |H - 2A - 2Gamma| = 4.44e-15
+    max sqrt(n)(T - 2) = -1.671675 (must be <= -0.805); max Gamma ln2/I = 0.523711; max B ln2/(2I) = 0.577684
+time 16 s

@@ -1,0 +1,542 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,amsthm,mathtools,enumitem,booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+\newtheorem{mainthm}{Theorem}
+\renewcommand{\themainthm}{\Alph{mainthm}}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[lemma]{Remark}
+\newcommand{\bits}{\{-1,1\}}
+\newcommand{\E}{\mathbb E}
+\renewcommand{\P}{\mathbb P}
+\newcommand{\HH}{\mathsf H}
+\newcommand{\I}{\mathsf I}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\thr}{\mathrm{thr}}
+\newcommand{\Phib}{\overline{\Phi}}
+\setlist{itemsep=3pt,topsep=5pt}
+\setlength{\emergencystretch}{1em}
+\raggedbottom
+\hypersetup{pdftitle={A sharp within-level Fourier entropy bound for symmetric Boolean functions},pdfauthor={Yitzchak Shmalo}}
+
+\title{A sharp within-level Fourier entropy bound for symmetric Boolean functions}
+\author{Yitzchak Shmalo}
+\address{Einstein Institute of Mathematics, The Hebrew University of Jerusalem, Jerusalem, Israel}
+\email{yitzchak.shmalo@gmail.com}
+\date{22 November 2026}
+\subjclass[2020]{42C10, 60J10, 68Q17, 06E30, 94A17}
+\keywords{Fourier entropy--influence conjecture, symmetric Boolean function, Ehrenfest chain, random walk, threshold function}
+
+\begin{document}
+\begin{abstract}
+Let $f$ be a non-constant symmetric Boolean function on $n$ variables, with Fourier weight $W_k$ on level $k$ and total influence $\I[f]$. We prove $\sum_k W_k\log_2\binom nk\le\frac2{\ln2}\,\I[f]$, and majority shows that $2/\ln 2$ is optimal. O'Donnell, Wright and Zhou proved this within-level bound with the constant $9.04$ in their proof of the Fourier entropy--influence conjecture for symmetric functions. The proof writes the entropy of each level as a series in the return probabilities of the random walk on the cube, reduces to threshold functions, and compares the walk on Hamming levels with simple random walk on the integers. A quantitative form of the estimate gives a second sharp bound: writing $\HH[f]=2\mathsf A[f]+2\Gamma[f]$, where $\Gamma[f]$ measures the cancellation among the Fourier coefficients of the restrictions of $f$, we prove $\Gamma[f]\le\I[f]/\ln2$, again with majority extremal. Small $n$ are settled by an exact rational computation.
+\end{abstract}
+\maketitle
+
+\section{Introduction}
+
+For $f:\bits^n\to\bits$ write $f=\sum_{S\subseteq[n]}\wh f(S)\chi_S$ with $\chi_S(x)=\prod_{i\in S}x_i$. Since $\sum_S\wh f(S)^2=1$, the numbers $\wh f(S)^2$ are the probabilities of a distribution on the subsets of $[n]$, the \emph{spectral distribution} of $f$. We write $\HH[f]$ for its entropy and $\I[f]$ for the total influence:
+\[
+ \HH[f]=\sum_{S}\wh f(S)^2\log_2\frac{1}{\wh f(S)^2},\qquad
+ \I[f]=\sum_S|S|\,\wh f(S)^2=\sum_{i=1}^n\P_x\bigl[f(x)\ne f(x^{\oplus i})\bigr],
+\]
+where $\log_2$ is the logarithm to base $2$, $\ln$ the natural logarithm, $x^{\oplus i}$ is $x$ with its $i$-th coordinate flipped and $\I_i[f]$, the $i$-th term of the last sum, is the influence of coordinate $i$. Friedgut and Kalai~\cite{FK96} conjectured that some absolute constant $C$ satisfies $\HH[f]\le C\,\I[f]$ for every $f$; the conjecture is open. For symmetric functions it was proved by O'Donnell, Wright and Zhou~\cite{OWZ11}, and~\cite{Shm26b} brings the constant down to $4.650431$. O'Donnell and Tan~\cite{OT13} proved it for read-once formulas, and Wan, Wright and Wu~\cite{WWW14} for read-$k$ decision trees with bounded $k$. Weaker forms and further classes are treated in~\cite{KMS12,CKLS16,ACKSW21,GMP26}. Without structural assumptions, the spectrum of $f$ is concentrated on $2^{O(\I[f]\log\I[f])}$ characters by the theorem of Kelman, Kindler, Lifshitz, Minzer and Safra~\cite{KKLMS20}, and Han~\cite{Han25} showed $\HH[f]\le O(\I[f])+O\bigl(\sum_i\I_i[f]\log(1/\I_i[f])\bigr)$.
+
+We call $f$ \emph{symmetric} when $f(x)$ is a function of the Hamming weight $|x|$, the number of coordinates of $x$ equal to $-1$. Then $\wh f(S)$ depends only on $|S|$, so the spectral distribution is uniform on each level, and with $W_k=\sum_{|S|=k}\wh f(S)^2$,
+\begin{equation}\label{eq:split}
+ \HH[f]=\mathsf B[f]+\mathsf L[f],\qquad \mathsf B[f]=\sum_{k=0}^nW_k\log_2\binom nk,\qquad \mathsf L[f]=\sum_{k=0}^nW_k\log_2\frac1{W_k}.
+\end{equation}
+The proof in~\cite{OWZ11} bounds the two parts separately and gives the constant $12.04$. Theorem~4 of~\cite{OWZ11} is the within-level bound $\mathsf B[f]\le C_1\I[f]$ with $C_1=\frac1{\ln2}\bigl(1+4\sqrt{2e/\pi}\bigr)=9.034\dots$. In~\cite{Shm26b} the within-level bound was improved to $\mathsf B[f]<(2+\frac1{\ln2})\I[f]=3.443\,\I[f]$, and it was observed that majority forces the within-level constant to be at least $2/\ln2=2.885$. The first result of this paper is that $2/\ln2$ is the exact constant.
+
+Write $h(p)=-p\ln p-(1-p)\ln(1-p)$ for the binary entropy in nats. Since $\log_2\binom nk\le n\,h(k/n)/\ln2$, the following theorem bounds $\mathsf B[f]$.
+
+\begin{mainthm}\label{thm:A}
+For every $n\ge1$ and every non-constant symmetric $f:\bits^n\to\bits$,
+\[
+ n\sum_{k=0}^nW_k\,h(k/n)\le2\,\I[f],\qquad\text{hence}\qquad \mathsf B[f]\le\frac{2}{\ln2}\,\I[f]=2.885\dots\,\I[f].
+\]
+For majority on $n$ variables ($n$ odd), $n\sum_kW_kh(k/n)/\I\to2$ and $\mathsf B/\I\to2/\ln2$ as $n\to\infty$. So $2/\ln2$ is the best possible constant in both inequalities.
+\end{mainthm}
+
+The second result concerns a different split of the entropy. For $S\subseteq[n]$ and $z\in\bits^{[n]\setminus S}$ let
+\[
+ c_S(z)=\E_{y}\bigl[f(y,z)\chi_S(y)\bigr],\qquad y\text{ uniform on }\bits^S,
+\]
+be the $S$-coefficient of the restriction of $f$ that fixes the coordinates outside $S$ to $z$ (see~\cite[Section~3.3]{OD14}), and let $\alpha(S)=\E_z|c_S(z)|$. Since $\wh f(S)=\E_zc_S(z)$, we have $|\wh f(S)|\le\alpha(S)\le1$. Define
+\[
+ \mathsf A[f]=\sum_S\wh f(S)^2\log_2\frac1{\alpha(S)},\qquad
+ \Gamma[f]=\sum_S\wh f(S)^2\log_2\frac{\alpha(S)}{|\wh f(S)|},
+\]
+both sums over the $S$ with $\wh f(S)\ne0$. Both quantities are nonnegative and $\HH[f]=2\mathsf A[f]+2\Gamma[f]$. The term $\Gamma[f]$ vanishes exactly when, for every $S$ in the support, the restricted coefficients $c_S(z)$ do not change sign as $z$ varies; it measures how much the Fourier coefficients of the restrictions cancel when they are averaged into $\wh f(S)$.
+
+\begin{mainthm}\label{thm:B}
+For every $n\ge1$ and every non-constant symmetric $f:\bits^n\to\bits$,
+\[
+ \Gamma[f]\le\frac{1}{\ln2}\,\I[f].
+\]
+For majority on $n$ variables, $\Gamma/\I\to1/\ln2$. So $1/\ln2$ is the best possible constant.
+\end{mainthm}
+
+Theorem~\ref{thm:B} needs more than Theorem~\ref{thm:A}: it uses that the constant $2$ in Theorem~\ref{thm:A} is approached at rate $n^{-1/2}$ from below. Proposition~\ref{prop:Q} shows $n\sum_kW_kh(k/n)\le(2-0.805\,n^{-1/2})\I[f]$, and the number $0.805$ has to exceed $\max_{t>0}\ln(1+t^2)/t=0.80474\dots$ for the argument to close. From Theorem~\ref{thm:A} alone the same argument gives $\Gamma[f]\le(\frac1{\ln2}+0.581\,n^{-1/2})\I[f]$ (Remark~\ref{rem:weak}).
+
+The proof of Theorem~\ref{thm:A} has three ingredients. The first is an identity valid for every Boolean function (Lemma~\ref{lem:series}): if $p_j$ is the probability that $f$ changes value along $j$ steps of the random walk on the cube that flips one uniformly chosen coordinate per step, then
+\[
+ \frac{n}{\I[f]}\sum_kW_k\,h(k/n)=\sum_{r\ge1}\frac{p_{2r}/p_1}{r(2r-1)}.
+\]
+It comes from the power series of $h$ and the fact that level $k$ is an eigenspace of the walk. The second is a reduction to threshold functions (Lemma~\ref{lem:reduction}): a symmetric function changes value at a set of Hamming levels, and $p_1$ is additive over these levels while $p_j$ is subadditive. The third compares the walk with simple random walk on $\mathbb Z$. For a threshold function, $p_j/p_1$ is a sum of diagonal entries of powers of a tridiagonal matrix, the Ehrenfest chain on the Hamming levels of $n-1$ coordinates seen from one level. Its off-diagonal entries are at most $1/2$, and for $2r\le n$ this gives $p_{2r}/p_1\le\E|S_{2r}|$, where $S$ is simple random walk (Lemma~\ref{lem:claimC}). The constant $2$ is $\sum_r\E|S_{2r}|/(r(2r-1))$. The remaining terms $r>n/2$ are controlled by positive semidefiniteness of the walk, which caps $p_{2r}/p_1$ for every $r$. Majority shows that the comparison with $S$ is exact in the limit.
+
+For Theorem~\ref{thm:B} two further facts enter. One is the elementary bound $\alpha(S)\le\min_{i\in S}\I_i[f]$, which controls $\mathsf A[f]$ from below. The other is a sharper estimate of the cap for $r>n/2$ by the Mills ratio of the normal distribution, which gives the rate $0.805\,n^{-1/2}$.
+
+Theorem~\ref{thm:A} improves the within-level constant $9.04$ of~\cite[Theorem~4]{OWZ11} and $2+1/\ln2$ of~\cite{Shm26b} to the optimal $2/\ln2$. Combined with the level bound $\mathsf L[f]\le\log_2(4+e)\,\I[f]$ of~\cite[Lemma~2.1]{Shm26} it gives $\HH[f]\le5.634\,\I[f]$ for symmetric $f$. The best known constant for symmetric functions, $4.650431$, is proved in~\cite{Shm26b} by a restriction argument and does not come from the split~\eqref{eq:split}. A split into $\mathsf B$ and $\mathsf L$ bounded separately cannot give a constant below $2/\ln2+\sup\mathsf L/\I\ge2.885+2.517$, since $\mathsf L/\I=2.5176$ for OR on six variables~\cite{Shm26b}.
+
+The table lists what each section proves and what it uses.
+
+\begin{center}
+\small
+\begin{tabular}{@{}lp{0.42\textwidth}p{0.36\textwidth}@{}}
+\toprule
+Section & Proves & Uses\\
+\midrule
+\ref{sec:walk} & the series identity, the reduction to thresholds, the comparison with simple random walk, the cap, the tail form (Proposition~\ref{prop:tail}) & the eigenvalues of the walk on the cube\\
+\ref{sec:A} & Theorem~\ref{thm:A} for $n\ge100$ & Section~\ref{sec:walk}\\
+\ref{sec:B} & the rate $2-0.805\,n^{-1/2}$ for $n\ge1000$ (Proposition~\ref{prop:Q}) and Theorem~\ref{thm:B} & Section~\ref{sec:walk}, the Mills ratio, Lemma~\ref{lem:alpha}\\
+\ref{sec:sharp} & both theorems are sharp at majority & Sections~\ref{sec:walk}--\ref{sec:B}\\
+\ref{sec:computations} & Theorem~\ref{thm:A} and Proposition~\ref{prop:Q} for $2\le n\le1500$ & Proposition~\ref{prop:tail}, exact rational arithmetic\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{The random walk on the cube}\label{sec:walk}
+
+Throughout, $f:\bits^n\to\bits$ and $n\ge2$. Let $X_0$ be uniform on $\bits^n$, and let $X_{j+1}$ be $X_j$ with one coordinate, chosen uniformly and independently of the past, flipped. Write
+\[
+ p_j=p_j(f)=\P\bigl[f(X_0)\ne f(X_j)\bigr],\qquad Pg(x)=\frac1n\sum_{i=1}^ng(x^{\oplus i}).
+\]
+Then $\E[f(X_0)f(X_j)]=\langle f,P^jf\rangle$, so $1-\langle f,P^jf\rangle=2p_j$. The character $\chi_S$ is an eigenfunction of $P$ with eigenvalue $x_{|S|}$, where $x_k=1-2k/n$. Hence $\langle f,P^jf\rangle=\sum_kW_kx_k^j$, and
+\begin{equation}\label{eq:I}
+ \I[f]=\sum_kkW_k=\frac n2\sum_kW_k(1-x_k)=n\,p_1.
+\end{equation}
+For a function with $\I[f]>0$ define
+\[
+ T(f)=\frac{n}{\I[f]}\sum_{k=0}^nW_k\,h(k/n),\qquad w_r=\frac1{r(2r-1)}\quad(r\ge1).
+\]
+
+\begin{lemma}[Series identity]\label{lem:series}
+For every non-constant $f:\bits^n\to\bits$,
+\[
+ T(f)=\sum_{r\ge1}w_r\,\frac{p_{2r}}{p_1}.
+\]
+\end{lemma}
+
+\begin{proof}
+For $|x|\le1$, $h\bigl(\frac{1-x}2\bigr)=\ln2-\sum_{r\ge1}\frac{x^{2r}}{2r(2r-1)}$: both sides are even in $x$, agree at $x=0$, and have second derivative $-1/(1-x^2)$ on $(-1,1)$; at $x=\pm1$ both vanish, because $\sum_{r\ge1}\frac1{2r(2r-1)}=\ln2$. Since $k/n=(1-x_k)/2$ and $\sum_kW_k=1$,
+\[
+ \sum_kW_k\,h(k/n)=\sum_{r\ge1}\frac{1-\sum_kW_kx_k^{2r}}{2r(2r-1)}=\sum_{r\ge1}\frac{2p_{2r}}{2r(2r-1)}=\sum_{r\ge1}w_rp_{2r},
+\]
+where the interchange of sums is justified because all terms are nonnegative. Multiply by $n/\I[f]=1/p_1$, using~\eqref{eq:I}.
+\end{proof}
+
+Let $\pi$ be the law of $|X_0|$, the binomial distribution $\mathrm{Bin}(n,\frac12)$, and let $\pi'$ be $\mathrm{Bin}(n-1,\frac12)$. For $0\le s\le n-1$ let $\thr_s(x)=1$ if $|x|\le s$ and $\thr_s(x)=-1$ otherwise, and write
+\[
+ \pi_{\le}(s)=\pi(\{0,\dots,s\}),\qquad \pi_{>}(s)=1-\pi_{\le}(s).
+\]
+A step of the walk changes $|X|$ by one, so $\thr_s$ changes value at a step exactly when the step crosses between levels $s$ and $s+1$. Hence
+\begin{equation}\label{eq:p1}
+ p_1(\thr_s)=\pi(s)\frac{n-s}n+\pi(s+1)\frac{s+1}n=2\pi(s)\frac{n-s}{n}=\pi'(s).
+\end{equation}
+Replacing $x$ by $-x$ exchanges $\thr_s$ with $-\thr_{n-1-s}$ and preserves the walk, so $T(\thr_s)=T(\thr_{n-1-s})$.
+
+\begin{lemma}[Reduction to thresholds]\label{lem:reduction}
+Let $f$ be symmetric and non-constant, $f(x)=F(|x|)$, and let $J=\{s\in\{0,\dots,n-1\}:F(s)\ne F(s+1)\}$. Then $\I[f]=\sum_{s\in J}\I[\thr_s]$ and
+\[
+ T(f)\,\I[f]\le\sum_{s\in J}T(\thr_s)\,\I[\thr_s]\le\max_sT(\thr_s)\cdot\I[f].
+\]
+\end{lemma}
+
+\begin{proof}
+A single step crosses exactly one cut between consecutive levels, and $f$ changes value at that step if and only if the cut is in $J$; so $p_1(f)=\sum_{s\in J}p_1(\thr_s)$, which with~\eqref{eq:I} is the first claim. If $f(X_0)\ne f(X_j)$ then some cut in $J$ separates $|X_0|$ from $|X_j|$, and $\thr_s(X_0)\ne\thr_s(X_j)$ for that cut. By the union bound $p_j(f)\le\sum_{s\in J}p_j(\thr_s)$ for every $j$. Insert this into Lemma~\ref{lem:series}, written as $T(f)\I[f]=n\sum_rw_rp_{2r}(f)$, and use $n\sum_rw_rp_{2r}(\thr_s)=T(\thr_s)\I[\thr_s]$.
+\end{proof}
+
+We now fix $s$ and let $f=\thr_s$. For $i\in[n]$ let $D_ig(x)=\frac12(g(x)-g(x^{\oplus i}))$. Then $D_if(x)=x_i\,\mathbf 1[\,|x_{-i}|=s\,]$, with $\mathbf 1[\cdot]$ the indicator, where $x_{-i}$ is $x$ without its $i$-th coordinate. A direct computation gives, for every $g$,
+\begin{equation}\label{eq:commute}
+ D_i(Pg)=\Bigl(\frac{n-1}nP'_i-\frac1n\Bigr)D_ig,
+\end{equation}
+where $P'_i$ is the walk on the $n-1$ coordinates other than $i$: the $n-1$ terms of $Pg$ that flip a coordinate $k\ne i$ commute with $D_i$, and the term that flips $i$ contributes $D_i\bigl(g(x^{\oplus i})\bigr)=-D_ig(x)$. Moreover $\langle g,(\mathrm{Id}-P)g\rangle=\frac2n\sum_i\E[(D_ig)^2]$ and, more generally, $\langle g,(\mathrm{Id}-P)P^mg\rangle=\frac2n\sum_i\E[D_ig\cdot D_iP^mg]$.
+
+On functions of the Hamming weight of $n-1$ coordinates, $\frac{n-1}nP'_i$ acts as the substochastic matrix that moves from level $t$ to $t+1$ with probability $\frac{n-1-t}n$ and to $t-1$ with probability $\frac tn$. Conjugating by the diagonal matrix $\mathrm{diag}(\pi'(t)^{1/2})$ makes it symmetric. Let $J$ be the resulting tridiagonal matrix on $\{0,\dots,n-1\}$, with zero diagonal and
+\[
+ J_{t,t+1}=J_{t+1,t}=b_t=\frac{\sqrt{(t+1)(n-1-t)}}n,\qquad 0\le t\le n-2,
+\]
+and let $B=J-\frac1n\mathrm{Id}$, where $\mathrm{Id}$ is the identity matrix.
+
+\begin{lemma}\label{lem:tridiag}
+For every $j\ge1$, $\dfrac{p_j(\thr_s)}{p_1(\thr_s)}=\sum_{i=0}^{j-1}[B^i]_{ss}$. Moreover $b_t\le\frac12$ for every $t$.
+\end{lemma}
+
+\begin{proof}
+Telescoping, $2p_j=1-\langle f,P^jf\rangle=\sum_{m=0}^{j-1}\langle f,(\mathrm{Id}-P)P^mf\rangle$. By~\eqref{eq:commute}, $D_iP^mf=(\frac{n-1}nP'_i-\frac1n)^mD_if$, and $D_if=\pm\mathbf 1[|x_{-i}|=s]$ with a sign that does not depend on $x_{-i}$. So
+\[
+ \langle f,(\mathrm{Id}-P)P^mf\rangle=\frac2n\sum_{i=1}^n\E\Bigl[\mathbf 1_{s}\cdot\Bigl(\frac{n-1}nP'_i-\frac1n\Bigr)^m\mathbf 1_s\Bigr]=2\,\pi'(s)\,[B^m]_{ss},
+\]
+since a diagonal entry is unchanged by the conjugation. With $m=0$ this gives $p_1=\pi'(s)$, in agreement with~\eqref{eq:p1}, and dividing gives the identity. Finally $(t+1)(n-1-t)\le(n/2)^2$ by the arithmetic--geometric mean inequality.
+\end{proof}
+
+Let $S_m$ be simple random walk on $\mathbb Z$ started at $0$, and let
+\[
+ e_r=\E|S_{2r}|=\frac{2r}{4^r}\binom{2r}{r}=\sum_{a=0}^{2r-1}\P[S_a=0].
+\]
+The last equality holds because $\E|S_{m+1}|-\E|S_m|=\P[S_m=0]$.
+
+\begin{lemma}[Comparison with simple random walk]\label{lem:claimC}
+For every threshold $\thr_s$ and every $r$ with $2r\le n$,
+\[
+ \frac{p_{2r}(\thr_s)}{p_1(\thr_s)}\le e_r.
+\]
+\end{lemma}
+
+\begin{proof}
+Expand $B^i=\sum_a\binom iaJ^a(-\frac1n)^{i-a}$ and collect the coefficient of $J^a$:
+\[
+ \sum_{i<2r}[B^i]_{ss}=\sum_{a<2r}c_a\,[J^a]_{ss},\qquad c_a=\sum_{k=0}^{2r-1-a}\binom{a+k}{k}\Bigl(-\frac1n\Bigr)^k.
+\]
+The ratio of consecutive terms of $c_a$ in absolute value is $\frac{a+k+1}{(k+1)n}\le\frac{a+1}{n}\le\frac{2r}n\le1$. So $c_a$ is an alternating sum whose terms decrease in absolute value and start at $1$, and $0\le c_a\le1$. The matrix $J$ is entrywise nonnegative, so $[J^a]_{ss}\ge0$, and therefore $\sum_{a<2r}c_a[J^a]_{ss}\le\sum_{a<2r}[J^a]_{ss}$. Now $[J^a]_{ss}$ is a sum over the closed paths of length $a$ from $s$ in the path graph on $\{0,\dots,n-1\}$ of the products of the weights $b_t$ along the path. There are at most $\binom a{a/2}$ such paths (none if $a$ is odd), since each is a closed walk on $\mathbb Z$, and each weight is at most $\frac12$ by Lemma~\ref{lem:tridiag}. Hence $[J^a]_{ss}\le\binom{a}{a/2}2^{-a}=\P[S_a=0]$, and Lemma~\ref{lem:tridiag} finishes the proof.
+\end{proof}
+
+\begin{lemma}[Cap for every $r$]\label{lem:cap}
+For every $s$ and every $r\ge1$,
+\[
+ \frac{p_{2r}(\thr_s)}{p_1(\thr_s)}\le M(s):=\frac{2\,\pi_\le(s)\,\pi_>(s)}{\pi'(s)}.
+\]
+Moreover the even partial sums $\sum_{i<2r}[B^i]_{ss}$ increase with $r$.
+\end{lemma}
+
+\begin{proof}
+$\langle f,P^{2r}f\rangle=\|P^rf\|^2\ge(\E P^rf)^2=(\E f)^2$, and for $f=\thr_s$ we have $1-(\E f)^2=4\pi_\le(s)\pi_>(s)$. So $p_{2r}\le2\pi_\le\pi_>$, and $p_1=\pi'(s)$. For the monotonicity, $[B^{2r}]_{ss}+[B^{2r+1}]_{ss}=[B^{r}(\mathrm{Id}+B)B^r]_{ss}\ge0$ because the eigenvalues of $B$ lie in $[-1,\frac{n-2}n]$; they are $\frac{n-1}n\lambda-\frac1n$ for the eigenvalues $\lambda\in[-1,1]$ of the Ehrenfest chain.
+\end{proof}
+
+\begin{lemma}\label{lem:two}
+$\sum_{r\ge1}e_rw_r=2$.
+\end{lemma}
+
+\begin{proof}
+$e_rw_r=\frac{2}{2r-1}\binom{2r}r4^{-r}$, and $\sum_{r\ge1}\frac1{2r-1}\binom{2r}rx^r=1-\sqrt{1-4x}$ for $|x|\le\frac14$. Put $x=\frac14$.
+\end{proof}
+
+\begin{proposition}[Tail form]\label{prop:tail}
+Let $R=\lfloor n/2\rfloor$. For every $s$,
+\[
+ 2-T(\thr_s)\ge\sum_{r>R}\bigl(e_r-M(s)\bigr)w_r.
+\]
+In particular $T(\thr_s)\le2$ whenever $M(s)\le L(n):=\sum_{r>R}e_rw_r\big/\sum_{r>R}w_r$.
+\end{proposition}
+
+\begin{proof}
+By Lemmas~\ref{lem:series} and~\ref{lem:two}, $2-T(\thr_s)=\sum_r(e_r-p_{2r}/p_1)w_r$. The terms with $r\le R$ are nonnegative by Lemma~\ref{lem:claimC}, and the terms with $r>R$ are at least $(e_r-M(s))w_r$ by Lemma~\ref{lem:cap}.
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:A}}\label{sec:A}
+
+For $n=1$ the non-constant functions are $\pm x_1$, with $W_1=1$ and $h(1)=0$. For $n\ge2$, by Lemma~\ref{lem:reduction} and Proposition~\ref{prop:tail} it suffices to show $M(s)\le L(n)$ for every $s$, and by the symmetry $T(\thr_s)=T(\thr_{n-1-s})$ we may take $s\le\frac{n-1}2$. For $2\le n\le1500$ an exact computation shows $2-T(\thr_s)>0$ directly from Proposition~\ref{prop:tail} (Section~\ref{sec:computations}). Here we prove $M(s)\le L(n)$ for $n\ge100$.
+
+\emph{Lower bound on $L(n)$.} We use $\binom{2r}r4^{-r}\ge\frac1{2\sqrt r}$, so $e_r\ge\sqrt r$; $w_r\ge\frac1{2r^2}$; and $w_r\le\frac12(\frac1{r-1}-\frac1r)$ for $r\ge2$. Then $\sum_{r>R}e_rw_r\ge\frac12\sum_{r>R}r^{-3/2}\ge\frac12\int_{R+1}^\infty u^{-3/2}du=(R+1)^{-1/2}$ and $\sum_{r>R}w_r\le\frac1{2R}$, so
+\[
+ L(n)\ge\frac{2R}{\sqrt{R+1}}\ge\frac{\sqrt2\,(n-1)}{\sqrt{n+1}}.
+\]
+For $n$ odd the last step is an equality. For $n$ even, $R=n/2$ and $\frac n{\sqrt{n+2}}\ge\frac{n-1}{\sqrt{n+1}}$ is equivalent to $n^2(n+1)\ge(n-1)^2(n+2)$, that is, to $n^2+3n-2\ge0$.
+
+\emph{Upper bounds on $M(s)$.} Write $d=n-2s\ge1$, $N=n-1$, $m=\lfloor N/2\rfloor$ and $j=m-s\ge0$. By~\eqref{eq:p1}, $M(s)=\frac{n\,q_s\,\pi_>(s)}{n-s}$ with $q_s=\pi_\le(s)/\pi(s)$.
+
+(a) For $k\le s$, $\binom n{k-1}\big/\binom nk=\frac k{n-k+1}\le\frac s{n-s+1}$, so $q_s\le\frac{n-s+1}{d+1}$ by summing a geometric series. With $\pi_>\le1$ and $\frac{n(n-s+1)}{n-s}=n+\frac n{n-s}\le n+2$,
+\[
+ M(s)\le\frac{n+2}{d+1}.
+\]
+
+(b) Since $\pi_\le\pi_>\le\frac14$, $M(s)\le\frac{2^n}{4\binom Ns}$. We have $\binom Nm\ge2^N/\sqrt{2N+2}$: for even $N$ this follows from~\cite{Kaz56} since $\pi<4$, and for odd $N\ge3$ from~\cite{Kaz56} applied to $\binom{2m+1}m=\frac12\binom{2m+2}{m+1}$, since $\pi(N+2)\le4N+4$; for $N=1$ it is an equality. Also
+\[
+ \frac{\binom N{m-j}}{\binom Nm}=\prod_{i=1}^j\frac{m-i+1}{N-m+i}.
+\]
+Each factor equals $1-\frac{2i-1}{m+i}$ if $N$ is even and $1-\frac{2i}{m+1+i}$ if $N$ is odd, so it is at least $1-\frac{2i}m$. By the Weierstrass product inequality $\prod(1-u_i)\ge1-\sum u_i$ for $u_i\in[0,1]$, the ratio is at least $1-\frac{j(j+1)}m$ when $2j\le m$. Hence
+\[
+ M(s)\le\frac{\sqrt{n/2}}{1-j(j+1)/m}\qquad\text{if }2j\le m.
+\]
+
+If $j(j+1)\le m/3$ (which implies $2j\le m$), (b) gives $M(s)\le\frac32\sqrt{n/2}<1.061\sqrt n$. Otherwise $(j+1)^2>m/3$, and since $d+1=n-2m+2j+1\ge2j+2$ and $m\ge\frac{n-2}2$, we get $d+1>2\sqrt{m/3}\ge\sqrt{2(n-2)/3}$, so (a) gives $M(s)<\sqrt{3/2}\,(n+2)/\sqrt{n-2}$. Both bounds are at most $\sqrt2(n-1)/\sqrt{n+1}$ for $n\ge100$: the ratios $\frac{1.061\sqrt{n(n+1)}}{\sqrt2(n-1)}$ and $\frac{\sqrt3}{2}\frac{(n+2)\sqrt{n+1}}{(n-1)\sqrt{n-2}}$ decrease in $n$ and equal $0.762$ and $0.906$ at $n=100$. This proves $M(s)\le L(n)$ for $n\ge100$, and with the computation for $n<100$ the inequality $T(f)\le2$. Since $\log_2\binom nk\le n\,h(k/n)/\ln2$, the bound on $\mathsf B[f]$ follows. Sharpness is proved in Section~\ref{sec:sharp}.\qed
+
+\begin{remark}
+The maximum of $T$ over symmetric functions is attained at a threshold function, by Lemma~\ref{lem:reduction}. For $n\le1500$, $\max_sM(s)/L(n)<0.42$ (Section~\ref{sec:computations}), so the comparison in Lemma~\ref{lem:claimC} and not the cap is what determines the constant.
+\end{remark}
+
+\section{The rate, and the proof of Theorem~\ref{thm:B}}\label{sec:B}
+
+\begin{proposition}\label{prop:Q}
+For every $n\ge2$ and every $0\le s\le n-1$,
+\[
+ \sqrt n\,\bigl(2-T(\thr_s)\bigr)\ge0.805.
+\]
+Consequently $T(f)\le2-0.805\,n^{-1/2}$ for every non-constant symmetric $f:\bits^n\to\bits$.
+\end{proposition}
+
+The consequence follows from Lemma~\ref{lem:reduction}. For $2\le n\le1500$ the inequality is verified in exact arithmetic (Section~\ref{sec:computations}). For $n\ge1000$ it follows from Proposition~\ref{prop:tail}, the lower bound~\eqref{eq:Q1} on the tail, and Lemma~\ref{lem:mills} below.
+
+\emph{The tail.} We use $\binom{2r}r4^{-r}\ge\bigl(\pi(r+\frac12)\bigr)^{-1/2}$~\cite{Kaz56}. Since $\frac2{2r-1}\ge\frac1{r+1/2}$, this gives $e_rw_r\ge\pi^{-1/2}(r+\frac12)^{-3/2}$, a decreasing function of $r$, and so $\sum_{r>R}e_rw_r\ge\pi^{-1/2}\int_{R+1}^\infty(u+\frac12)^{-3/2}du$. With $\sum_{r>R}w_r\le\frac1{2R}$, Proposition~\ref{prop:tail} gives
+\begin{equation}\label{eq:Q1}
+ 2-T(\thr_s)\ge\frac{2}{\sqrt{\pi(R+3/2)}}-\frac{M(s)}{2R}.
+\end{equation}
+
+\begin{lemma}\label{lem:mills}
+For $n\ge1000$ and every $s$, $M(s)\le0.76352\,\sqrt n$.
+\end{lemma}
+
+\begin{proof}
+By symmetry take $s\le\frac{n-1}2$. Let $N=n-1$, $p=\pi'(s)$, $a=N/2$, $y=a-s\ge0$, $\sigma=\sqrt N/2$ (so $a=2\sigma^2$) and $z=y/\sigma$. Let $\varphi$ and $\Phi$ be the standard normal density and distribution function, $\Phib=1-\Phi$, and let $\mathcal R(z)=\Phib(z)/\varphi(z)$ be the Mills ratio.
+
+(i) Adding one fair coin to $N$ coins, $\pi_\le(s)=\pi'(\{0,\dots,s-1\})+\frac p2$. Put $A=\pi_\le(s)/p$. Then $M(s)=2A(1-pA)$ and $pA=\pi_\le(s)\le\frac12$.
+
+(ii) For $k=s-j$, $\frac{\pi'(k-1)}{\pi'(k)}=\frac{k}{N-k+1}=\frac{a-y-j}{a+y+j+1}\le\frac{1-\rho}{1+\rho}\le e^{-2\rho}$ with $\rho=(y+j)/a$. Multiplying over $j<i$ gives $\pi'(s-i)/p\le g(i):=\exp\bigl(-(i^2+(2y-1)i)/a\bigr)$. The function $g$ decreases on $[1,\infty)$ and $g(1)\le1$, so
+\[
+ A\le\frac12+g(1)+\int_1^\infty g\le\frac32+\int_0^\infty e^{-(v^2+2yv)/a}\,dv=\frac32+\sigma\,\mathcal R(z)=:A_{\mathrm{up}},
+\]
+where we replaced the variable of integration by $v+1$ and used $(v+1)^2+(2y-1)(v+1)\ge v^2+2yv$ for $v,y\ge0$, and then completed the square.
+
+(iii) The central term satisfies $\pi'(\lfloor a\rfloor)\ge(\pi(a+1))^{-1/2}$ for both parities of $N$, by~\cite{Kaz56} and, for $N=2m+1$, by $\binom{2m+1}m=\frac12\binom{2m+2}{m+1}$. Going down from the centre, each ratio is $1-u_i$ with $u_i=\frac{2i-1}{m+i}$ ($N=2m$) or $u_i=\frac{2i}{m+1+i}$ ($N=2m+1$), and $1-u_i\ge e^{-u_i/(1-u_i)}$; the exponents add up to at most $y^2/(a-y+1)$. Hence
+\[
+ p\ge p_{\mathrm{low}}:=\frac{e^{-y^2/(a-y+1)}}{\sqrt{\pi(a+1)}}=\kappa\,\frac{\varphi(z)}{\sigma},\qquad \kappa=\sqrt{\frac a{a+1}}\exp\Bigl(-\frac{y^2(y-1)}{a(a-y+1)}\Bigr),
+\]
+and $\kappa\le1$: for $y\ge1$ both factors are at most $1$, and for $0\le y<1$ we have $y^2(1-y)\le\frac4{27}$ and $a-y+1>a$, so $\kappa\le\exp\bigl(\frac4{27a^2}-\frac1{2(a+1)}\bigr)\le1$, using $\sqrt{a/(a+1)}\le e^{-1/(2(a+1))}$ and $a\ge1$.
+
+(iv) Let $F(q)=\max\{2A'(1-qA'):A'\le A_{\mathrm{up}},\ qA'\le\frac12\}$. The function $A'\mapsto2A'(1-qA')$ increases while $qA'\le\frac12$, so $F(q)=2A_{\mathrm{up}}(1-qA_{\mathrm{up}})$ if $qA_{\mathrm{up}}\le\frac12$ and $F(q)=\frac1{2q}$ otherwise; $F$ decreases in $q$. By (i)--(iii), $M(s)\le F(p)\le F(p_{\mathrm{low}})$, and $F\le2A_{\mathrm{up}}$.
+
+(v) Now $n\ge1000$, so $\sqrt N\ge31.6$; every bound below is written with $\sqrt N\le\sqrt n$.
+
+If $z\ge1.6$: $\mathcal R(z)\le1/z$~\cite{Gor41}, so $M\le2A_{\mathrm{up}}\le3+\sqrt N/1.6$, and $M/\sqrt n\le3/\sqrt{1000}+0.625=0.7199$.
+
+If $0\le z\le1.6$ and $p_{\mathrm{low}}A_{\mathrm{up}}\le\frac12$: since $p_{\mathrm{low}}A_{\mathrm{up}}\ge\kappa\varphi(z)\mathcal R(z)=\kappa\Phib(z)$,
+\[
+ M\le\bigl(3+2\sigma\mathcal R\bigr)\bigl(1-\kappa\Phib\bigr)\le3+\sqrt N\Bigl[\frac{\Phi\Phib}{\varphi}+(1-\kappa)\frac{\Phib^2}{\varphi}\Bigr].
+\]
+Here $y\le0.8\sqrt N$, so $\frac{y^2(y-1)}{a(a-y+1)}\le\frac{2.048}{\sqrt N(1-1.6/\sqrt N)}\le0.0683$, and $\sqrt{a/(a+1)}\ge0.999$; hence $\kappa\ge0.999\,e^{-0.0683}>0.933$. The function $\Phib^2/\varphi$ is decreasing, because its logarithmic derivative is $z-2\varphi/\Phib<-z$, so it is at most its value $\sqrt{2\pi}/4=0.62666$ at $0$. Also $\Phi\Phib/\varphi\le\sqrt{2\pi}/4$ for every $z$: writing $\Phi\Phib=\frac14\bigl(1-\mathrm{erf}(z/\sqrt2)^2\bigr)$ and comparing the integral of $e^{-u^2-v^2}$ over the square $[0,x]^2$ with the quarter disc of radius $x$ gives $\mathrm{erf}(x)^2\ge1-e^{-x^2}$, so $\Phi\Phib\le\frac14e^{-z^2/2}$. Therefore $M\le3+0.62666\cdot1.067\,\sqrt N\le3+0.66865\sqrt N$, and $M/\sqrt n\le3/\sqrt{1000}+0.66865=0.76352$.
+
+If $0\le z\le1.6$ and $p_{\mathrm{low}}A_{\mathrm{up}}>\frac12$: since $p_{\mathrm{low}}\le\varphi(z)/\sigma$, we have $p_{\mathrm{low}}A_{\mathrm{up}}\le\Phib(z)+1.5\varphi(0)/\sigma\le\Phib(z)+0.0379$, which forces $\Phib(z)>0.4621$ and hence $z<0.0952$. Then $M\le\frac1{2p_{\mathrm{low}}}=\frac{\sigma}{2\kappa\varphi(z)}\le\frac{\sqrt N}{4\cdot0.933\,\varphi(0.0952)}\le0.6748\sqrt n$.
+
+Each of the three bounds decreases in $n$, so all of them hold for $n\ge1000$ with their values at $n=1000$.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:Q} for $n\ge1000$]
+Insert Lemma~\ref{lem:mills} into~\eqref{eq:Q1}. For $n$ even, $R=n/2$ and $\sqrt n\,(2-T)\ge\frac{2\sqrt2}{\sqrt\pi}\sqrt{\frac n{n+3}}-0.76352\ge1.59338-0.76352=0.82986$ at $n=1000$. For $n$ odd, $R=\frac{n-1}2$ and $\sqrt n\,(2-T)\ge\frac{2\sqrt2}{\sqrt\pi}\sqrt{\frac n{n+2}}-0.76352\frac n{n-1}\ge0.82989$ at $n=1001$. Both lower bounds increase with $n$ and exceed $0.805$.
+\end{proof}
+
+We turn to $\Gamma$.
+
+\begin{lemma}\label{lem:alpha}
+For every $f:\bits^n\to\bits$, every $S\ne\emptyset$ and every $i\in S$, $\alpha(S)\le\alpha(S\setminus\{i\})$, and $\alpha(\{i\})=\I_i[f]$. Hence $\alpha(S)\le\min_{i\in S}\I_i[f]$.
+\end{lemma}
+
+\begin{proof}
+Write $S'=S\setminus\{i\}$ and $z\in\bits^{[n]\setminus S}$. Then $c_S(z)=\frac12\bigl(c_{S'}(1,z)-c_{S'}(-1,z)\bigr)$, where the first argument is the value of $x_i$. By the triangle inequality and averaging over $z$, $\alpha(S)\le\alpha(S')$. For $S=\{i\}$, $c_{\{i\}}(z)=D_if(z)\cdot(\pm1)$ with $|D_if|=\mathbf 1[f(x)\ne f(x^{\oplus i})]$, so $\alpha(\{i\})=\I_i[f]$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:B}]
+For $n=1$ the non-constant functions are $\pm x_1$, and $\Gamma=0$. Let $n\ge2$, let $f$ be symmetric and non-constant, and write $v=1-W_0$ and $t=\I[f]/\sqrt n$. Since $\HH=2\mathsf A+2\Gamma$,
+\[
+ \Gamma[f]=\tfrac12\mathsf B[f]+\tfrac12\mathsf L[f]-\mathsf A[f].
+\]
+We bound the three terms. First, $\mathsf B[f]\le T(f)\I[f]/\ln2$. Second, $\mathsf L[f]\le h_2(W_0)+v\log_2n$, where $h_2=h/\ln2$, by grouping level $0$ against the $n$ levels $1,\dots,n$. Third, $\alpha(\emptyset)=1$, and for $S\ne\emptyset$ Lemma~\ref{lem:alpha} gives $\alpha(S)\le\I_i[f]=\I[f]/n$ because all influences of a symmetric function are equal; so $\mathsf A[f]\ge v\log_2(n/\I[f])$. Together,
+\begin{equation}\label{eq:chain}
+ \Gamma[f]\le\frac{T(f)}{2\ln2}\I[f]+\tfrac12h_2(v)+v\log_2t.
+\end{equation}
+For fixed $t>0$, $\max_{0\le v\le1}\bigl(\frac12h_2(v)+v\log_2t\bigr)\le\frac12\log_2(1+t^2)$, the maximum of $h_2(v)+v\log_2t^2$ over $v\in[0,1]$ being attained at $v=t^2/(1+t^2)$. By Proposition~\ref{prop:Q}, $T(f)\I[f]\le2\I[f]-0.805\,t$, so
+\[
+ \Gamma[f]\le\frac{\I[f]}{\ln2}+\frac{1}{2\ln2}\bigl(\ln(1+t^2)-0.805\,t\bigr).
+\]
+It remains to check $\ln(1+t^2)\le0.805\,t$ for $t>0$. The function $\psi(t)=0.805\,t-\ln(1+t^2)$ vanishes at $0$, tends to infinity, and has critical points where $0.805\,t^2-2t+0.805=0$, namely a local maximum at $t=0.50525$ and a local minimum at $t_1=(1+\sqrt{1-0.805^2})/0.805=1.97922$, where $\psi(t_1)=5.10\cdot10^{-4}>0$. Hence $\Gamma[f]\le\I[f]/\ln2$. Sharpness is proved in Section~\ref{sec:sharp}.
+\end{proof}
+
+\begin{remark}\label{rem:weak}
+The constant $0.805$ cannot be lowered below $g^*=\max_{t>0}\ln(1+t^2)/t=0.804742\dots$, attained at $t=1.98029\dots$, in this argument. Using Theorem~\ref{thm:A} instead of Proposition~\ref{prop:Q} in~\eqref{eq:chain} gives, with $t=\I[f]/\sqrt n$ as in the proof, $\Gamma[f]\le\frac{\I[f]}{\ln2}+\frac{\ln(1+t^2)}{2\ln2}\le\bigl(\frac1{\ln2}+\frac{g^*}{2\ln2}\,n^{-1/2}\bigr)\I[f]$, with $\frac{g^*}{2\ln2}=0.5805$, which needs only the range $n<100$ of the computation.
+\end{remark}
+
+\section{Majority}\label{sec:sharp}
+
+Let $n=2m+1$ and $\mathrm{Maj}_n=\thr_m$. Its influences are $\I_i=\binom{2m}m4^{-m}$, so $\I[\mathrm{Maj}_n]=n\binom{2m}m4^{-m}\sim\sqrt{2n/\pi}$ (the ratio tends to $1$ as $n\to\infty$), and $W_0=0$.
+
+\begin{proposition}\label{prop:majT}
+$T(\mathrm{Maj}_n)\to2$ as $n\to\infty$.
+\end{proposition}
+
+\begin{proof}
+Fix $i$. The entry $[B^i]_{mm}$ involves only $b_t$ with $|t-m|\le i/2$, and each such $b_t=\sqrt{(t+1)(n-1-t)}/n\to\frac12$, while the diagonal $-\frac1n\to0$. So $[B^i]_{mm}\to\binom i{i/2}2^{-i}=\P[S_i=0]$, and for fixed $r$, $p_{2r}/p_1=\sum_{i<2r}[B^i]_{mm}\to e_r$ by Lemma~\ref{lem:tridiag}. Every term $w_rp_{2r}/p_1$ of Lemma~\ref{lem:series} is nonnegative, so by Fatou's lemma $\liminf T(\mathrm{Maj}_n)\ge\sum_re_rw_r=2$ (Lemma~\ref{lem:two}). Theorem~\ref{thm:A} gives $T\le2$.
+\end{proof}
+
+For $1\le k\le n-1$, $\binom nk\ge(8k(n-k)/n)^{-1/2}\,2^{n\,h(k/n)/\ln2}\ge(2n)^{-1/2}2^{n\,h(k/n)/\ln2}$~\cite[Chapter~10, Lemma~7]{MS77}. Hence $\mathsf B[\mathrm{Maj}_n]\ge T\,\I/\ln2-\frac12\log_2(2n)$, and since $\I\sim\sqrt{2n/\pi}$, Proposition~\ref{prop:majT} gives $\mathsf B/\I\to2/\ln2$. This completes the proof of Theorem~\ref{thm:A}.
+
+\begin{proposition}\label{prop:majG}
+For $\mathrm{Maj}_n$ and every $S\ne\emptyset$, $\alpha(S)=\I_1[\mathrm{Maj}_n]$. Consequently $\mathsf A[\mathrm{Maj}_n]=\log_2\bigl(4^m/\binom{2m}m\bigr)\le\frac12\log_2(\pi(m+\frac12))$ and $\Gamma[\mathrm{Maj}_n]/\I\to1/\ln2$.
+\end{proposition}
+
+\begin{proof}
+Let $|S|=k\ge1$ and let $u$ be the number of $-1$ coordinates of $z$. The restriction is the threshold function on $k$ variables that equals $-1$ if and only if more than $j=m-u$ of them are $-1$. For a threshold function $g$ on $k$ variables that equals $-1$ if and only if more than $j$ of them are $-1$, with $0\le j\le k-1$, the top coefficient is
+\[
+ \E[g\chi_{[k]}]=2^{-k}\Bigl(\sum_{w\le j}(-1)^w\tbinom kw-\sum_{w>j}(-1)^w\tbinom kw\Bigr)=2^{1-k}(-1)^j\tbinom{k-1}{j},
+\]
+using $\sum_w(-1)^w\binom kw=0$ and $\sum_{w\le j}(-1)^w\binom kw=(-1)^j\binom{k-1}j$; it vanishes when the restriction is constant. Hence, with $\binom ab=0$ outside $0\le b\le a$,
+\[
+ \alpha(S)=\sum_{u}\frac{\binom{n-k}u}{2^{n-k}}\cdot\frac{2\binom{k-1}{m-u}}{2^k}=\frac{2}{2^n}\binom{n-1}{m}=\I_1[\mathrm{Maj}_n]
+\]
+by Vandermonde's identity. Since $W_0=0$, $\mathsf A=\log_2(1/\I_1)$, and $\I_1=\binom{2m}m4^{-m}\ge(\pi(m+\frac12))^{-1/2}$~\cite{Kaz56}. So $\mathsf A\le\log_2n$ for $n\ge3$ and $\mathsf A/\I\to0$ as $n\to\infty$, while $\HH\ge\mathsf B$ and $\mathsf B/\I\to2/\ln2$. Therefore $\liminf\Gamma/\I=\liminf(\HH/2-\mathsf A)/\I\ge1/\ln2$, and Theorem~\ref{thm:B} gives the matching upper bound.
+\end{proof}
+
+For majority the restricted coefficients $c_S(z)$ alternate in sign with $u$, and their average $\wh f(S)$ is smaller than $\alpha(S)$ by a factor exponential in $|S|$; this cancellation carries half of the entropy of majority.
+
+\section{Computations}\label{sec:computations}
+
+The repository~\cite{Repo} contains three Python scripts and their outputs.
+
+\emph{The certificate} (\texttt{certificate.py}) works in exact rational arithmetic with Python's \texttt{fractions} module. For $2\le n\le1500$ it computes $M(s)$ exactly for every $s\le\frac{n-1}2$ and, with $K=4095$ and $R=\lfloor n/2\rfloor$,
+\[
+ D(n,s)=\Bigl(\sum_{r=R+1}^Ke_rw_r+\frac1{64}\Bigr)-M(s)\Bigl(\sum_{r=R+1}^Kw_r+\frac1{2K}\Bigr).
+\]
+Since $\sum_{r>K}e_rw_r\ge(K+1)^{-1/2}=\frac1{64}$ and $\sum_{r>K}w_r\le\frac1{2K}$ (Section~\ref{sec:A}), Proposition~\ref{prop:tail} gives $2-T(\thr_s)\ge D(n,s)$. The script checks $D(n,s)>0$ and $n\,D(n,s)^2\ge0.805^2$ for every $n$ and $s$ in the range. The first inequality gives Theorem~\ref{thm:A} and the second gives Proposition~\ref{prop:Q}, for $2\le n\le1500$. Every case passes. The smallest value of $\sqrt n\,D$ is $0.8915$, at $n=1500$. It decreases slowly with $n$ because $K$ is fixed, and the analytic range $n\ge1000$ takes over. The script also prints $\max_sM(s)$ divided by the lower bound for $L(n)$ used in $D$; its largest value is $0.4128$, at $n=1499$. As a control, the same test with $0.805$ replaced by $1$ fails for $1495$ of the $1499$ values of $n$.
+
+\emph{The constants} (\texttt{constants.py}) recomputes in $40$-digit arithmetic with \texttt{mpmath} the numbers $g^*$, $\psi(t_1)$, $\kappa$, $0.76352$ and the margins in the proof of Proposition~\ref{prop:Q}.
+
+\emph{The independent checks} (\texttt{checks.py}) have three parts. The first two work from the definitions alone. For every non-constant symmetric $f$ on $n\le12$ variables they compute $\wh f$, $\alpha(S)$, $\HH$, $\mathsf A$, $\Gamma$ and $T$. They confirm $\HH=2\mathsf A+2\Gamma$, $T\le2-0.805\,n^{-1/2}$ and $\Gamma\le\I/\ln2$, and $\alpha(S)=\I_1$ for majority on $3,5,\dots,13$ variables. There are $16356$ such functions and no case fails; the largest value of $\sqrt n\,(T-2)$ among them is $-1.67$. The third part tests the lemmas of Section~\ref{sec:walk} against a direct computation. For every threshold function $\thr_s$ with $2\le n\le40$ and $s\le(n-1)/2$, which by symmetry covers all thresholds, $419$ cases, it computes $T(\thr_s)$ from the exact level weights and the ratios $p_{2r}/p_1$ exactly from the walk on Hamming levels. It checks that $T(\thr_s)$ lies between the partial sum of Lemma~\ref{lem:series} up to $r=200$ and that partial sum plus $M(s)/400$, that $p_{2r}/p_1\le e_r$ for $2r\le n$ (Lemma~\ref{lem:claimC}) and $p_{2r}/p_1\le M(s)$ for $r\le200$ (Lemma~\ref{lem:cap}), and that $2-T(\thr_s)\ge D(n,s)$. No case fails.
+
+The computations use Python~3 with \texttt{numpy} and \texttt{mpmath}~\cite{mpmath}; the versions are recorded in the output files.
+
+\section*{Acknowledgements and funding}
+The research presented in this paper was supported by the European Research
+Council (ERC) under the European Union's Horizon Europe research and
+innovation programme (grant agreement No.~101041711), by the Simons
+Foundation as part of the Collaboration on the Mathematical and Scientific
+Foundations of Deep Learning, by Heights Labs, by Convex Nexus Capital, by
+the Israel Science Foundation (grant number 2258/19), and by the Israel
+Science Foundation (ISF Grant 4101/25).
+
+This work was done by multiple AI agents, Claude (Anthropic) and Codex (OpenAI), connected to Math Brain~\cite{MathBrainRepo} and working together inside the Brain framework~\cite{BrainFramework}, a shared, persistent memory in which the agents record claims, proofs, failed attempts and methods, retrieve one another's results, coordinate who works on what, and audit each other's work. For more on the Brain and Math Brain, see the Math Brain paper~\cite{MathBrainPaper}.
+
+\section*{Declaration of competing interest}
+The author holds equity in Heights Labs and in Convex Nexus Capital and
+has a management role at Convex Nexus Capital. These entities are included
+in the funding declaration above.
+
+\section*{Declaration of generative AI and AI-assisted technologies}
+The paper is part of Math Brain, a research project on AI systems proving mathematical results. In November 2026, Codex agents running OpenAI's GPT-6.1 proved $\alpha(S)\le\I[f]/n$ for symmetric $f$ and with it the bound $\Gamma\le1.6\,\I$, computed $\Gamma$ in closed form for threshold functions, and showed that $\Gamma/\I\to1/\ln2$ for majority. Claude Opus 5.5 (Anthropic) agents, with Claude Fable 5.2 as adviser, proved Theorems~\ref{thm:A} and~\ref{thm:B}, wrote and ran the computations of Section~\ref{sec:computations}, searched the literature and prepared the manuscript. Other Claude agents re-derived the proofs by hand and checked them with independently written code. These checks are not peer review. The author directed the work and is responsible for the content of the paper and for decisions concerning its dissemination. The results rest on the work of others. The question is the Fourier entropy-influence conjecture of Friedgut and Kalai~\cite{FK96}. The split of the entropy into a within-level part and a level part, and the first within-level bound, are due to O'Donnell, Wright and Zhou~\cite[Theorem~4]{OWZ11}; the level bound used in the introduction is~\cite[Lemma~2.1]{Shm26}, and the constant $2+1/\ln2$ is from~\cite{Shm26b}. The paper adds the exact within-level constant, the rate and the bound on $\Gamma$.
+
+\section*{Data availability}
+\url{https://github.com/yspennstate/sharp-within-level-fourier-entropy}
+
+\begin{thebibliography}{99}
+\bibitem{ACKSW21}
+S.~Arunachalam, S.~Chakraborty, M.~Kouck\'y, N.~Saurabh and R.~de~Wolf,
+\emph{Improved bounds on Fourier entropy and min-entropy},
+ACM Trans. Comput. Theory \textbf{13} (2021), no.~4, Article~22, 40~pp.
+\href{https://doi.org/10.1145/3470860}{doi:10.1145/3470860}.
+
+\bibitem{CKLS16}
+S.~Chakraborty, R.~Kulkarni, S.~V.~Lokam and N.~Saurabh,
+\emph{Upper bounds on Fourier entropy},
+Theoret. Comput. Sci. \textbf{654} (2016), 92--112.
+\href{https://doi.org/10.1016/j.tcs.2016.05.006}{doi:10.1016/j.tcs.2016.05.006}.
+
+\bibitem{FK96}
+E.~Friedgut and G.~Kalai,
+\emph{Every monotone graph property has a sharp threshold},
+Proc. Amer. Math. Soc. \textbf{124} (1996), no.~10, 2993--3002.
+\href{https://doi.org/10.1090/S0002-9939-96-03732-X}{doi:10.1090/S0002-9939-96-03732-X}.
+
+\bibitem{GMP26}
+M.~J.~Gonz\'alez, P.~MacManus and M.~C.~Pereyra,
+\emph{Further evidence towards the Fourier entropy-influence conjecture},
+preprint (2026), \href{https://arxiv.org/abs/2606.00246}{arXiv:2606.00246}.
+
+\bibitem{Gor41}
+R.~D.~Gordon,
+\emph{Values of Mills' ratio of area to bounding ordinate and of the normal probability integral for large values of the argument},
+Ann. Math. Statist. \textbf{12} (1941), no.~3, 364--366.
+\href{https://doi.org/10.1214/aoms/1177731721}{doi:10.1214/aoms/1177731721}.
+
+\bibitem{Han25}
+X.~Han,
+\emph{A new bound for the Fourier-entropy-influence conjecture},
+Combinatorica \textbf{45} (2025), no.~1, Paper No.~4.
+\href{https://doi.org/10.1007/s00493-024-00133-z}{doi:10.1007/s00493-024-00133-z}.
+
+\bibitem{Kaz56}
+D.~K.~Kazarinoff,
+\emph{On Wallis' formula},
+Edinburgh Math. Notes \textbf{40} (1956), 19--21.
+\href{https://doi.org/10.1017/S095018430000029X}{doi:10.1017/S095018430000029X}.
+
+\bibitem{KMS12}
+N.~Keller, E.~Mossel and T.~Schlank,
+\emph{A note on the entropy/influence conjecture},
+Discrete Math. \textbf{312} (2012), no.~22, 3364--3372.
+\href{https://doi.org/10.1016/j.disc.2012.07.031}{doi:10.1016/j.disc.2012.07.031}.
+
+\bibitem{KKLMS20}
+E.~Kelman, G.~Kindler, N.~Lifshitz, D.~Minzer and M.~Safra,
+\emph{Towards a proof of the Fourier-entropy conjecture?},
+Geom. Funct. Anal. \textbf{30} (2020), no.~4, 1097--1138.
+\href{https://doi.org/10.1007/s00039-020-00544-2}{doi:10.1007/s00039-020-00544-2}.
+
+\bibitem{MS77}
+F.~J.~MacWilliams and N.~J.~A.~Sloane,
+\emph{The Theory of Error-Correcting Codes},
+North-Holland, Amsterdam, 1977.
+
+\bibitem{mpmath}
+The mpmath development team,
+\emph{mpmath: a Python library for arbitrary-precision floating-point arithmetic}, version 1.3.0, 2023,
+\url{https://mpmath.org}.
+
+\bibitem{OD14}
+R.~O'Donnell,
+\emph{Analysis of Boolean Functions},
+Cambridge University Press, Cambridge, 2014.
+
+\bibitem{OT13}
+R.~O'Donnell and L.-Y.~Tan,
+\emph{A composition theorem for the Fourier entropy-influence conjecture},
+in: ICALP 2013, Lecture Notes in Comput. Sci. \textbf{7965}, Springer, Heidelberg, 2013, 780--791.
+\href{https://doi.org/10.1007/978-3-642-39206-1_66}{doi:10.1007/978-3-642-39206-1\_66}.
+
+\bibitem{OWZ11}
+R.~O'Donnell, J.~Wright and Y.~Zhou,
+\emph{The Fourier entropy--influence conjecture for certain classes of Boolean functions},
+in: ICALP 2011, Lecture Notes in Comput. Sci. \textbf{6755}, Springer, Heidelberg, 2011, 330--341.
+\href{https://doi.org/10.1007/978-3-642-22006-7_28}{doi:10.1007/978-3-642-22006-7\_28}.
+
+\bibitem{Shm26}
+Y.~Shmalo,
+\emph{Fourier entropy of threshold functions and their compositions},
+preprint, 2026.
+\href{https://arxiv.org/abs/2610.16069}{arXiv:2610.16069}.
+
+\bibitem{Shm26b}
+Y.~Shmalo,
+\emph{The Fourier entropy-influence inequality for symmetric Boolean functions},
+preprint, Zenodo, 2026.
+\href{https://doi.org/10.5281/zenodo.24142256}{doi:10.5281/zenodo.24142256}.
+
+\bibitem{WWW14}
+A.~Wan, J.~Wright and C.~Wu,
+\emph{Decision trees, protocols and the entropy-influence conjecture},
+in: Proceedings of the 5th Conference on Innovations in Theoretical Computer Science (ITCS 2014), ACM, New York, 2014, 67--80.
+\href{https://doi.org/10.1145/2554797.2554806}{doi:10.1145/2554797.2554806}.
+
+\bibitem{Repo}
+Y.~Shmalo,
+\emph{A sharp within-level Fourier entropy bound for symmetric Boolean functions: paper and computations},
+2026, \url{https://github.com/yspennstate/sharp-within-level-fourier-entropy}.
+
+\bibitem{MathBrainRepo} Y.~Shmalo, \emph{Math Brain: public snapshot, code and tests}, 2026, \url{https://github.com/yspennstate/math-brain-public}.
+
+\bibitem{MathBrainPaper} Y.~Shmalo, \emph{Math Brain: shared, auditable memory for multi-agent mathematical research}, preprint, 2026, \url{https://github.com/yspennstate/math-brain-public/tree/main/papers/math-brain-2026-10-24}; Zenodo, \href{https://doi.org/10.5281/zenodo.24150837}{doi:10.5281/zenodo.24150837}.
+
+\bibitem{BrainFramework} Y.~Shmalo, \emph{Brain Framework}, public software repository, 2026, \url{https://github.com/yspennstate/brain-framework-public}.
+\end{thebibliography}
+\end{document}

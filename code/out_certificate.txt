@@ -1,0 +1,17 @@
+python 3.13.2, macOS-15.5-arm64-arm-64bit-Mach-O
+n     2  sqrt(n) D = 1.001647
+n     3  sqrt(n) D = 1.059492
+n     4  sqrt(n) D = 0.992671
+n     5  sqrt(n) D = 1.017759
+n    10  sqrt(n) D = 0.976533
+n    50  sqrt(n) D = 0.957973
+n   100  sqrt(n) D = 0.950584
+n   150  sqrt(n) D = 0.945560
+n   500  sqrt(n) D = 0.924532
+n  1000  sqrt(n) D = 0.905780
+n  1500  sqrt(n) D = 0.891458
+n = 2..1500: 0 failures []
+smallest sqrt(n) D = 0.891458 at n = 1500
+largest max_s M(s)/Llow(n) = 0.412807 at n = 1499
+control (1 in place of 0.805): fails at 1495 of 1499 values of n
+time 22 s
